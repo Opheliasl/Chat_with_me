@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ophelia's Catbot</title>
   <style>
     body {
@@ -53,10 +53,12 @@
       background: #fafafa;
       white-space: pre-line;
       margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .chat-bubble {
-      margin: 8px 0;
       padding: 10px 14px;
       border-radius: 16px;
       max-width: 80%;
@@ -95,6 +97,7 @@
       color: white;
       border-radius: 8px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
@@ -102,43 +105,53 @@
     }
   </style>
 </head>
-
 <body>
+
   <div class="chat-container">
     <h2>Talk with Ophelia's Catbot 🐾</h2>
 
     <div class="intro">
       <img src="https://raw.githubusercontent.com/Opheliasl/Chat_with_me/main/assets/Cat_ZaiZai.png" alt="Cat ZaiZai" />
-      <span>Hello! I'm Ophelia's cats-sistant. Ask me anything about her interests, or just say hi!</span>
+      <span>Hi There! You can ask me anything about her, or just say hi!</span>
     </div>
 
     <div id="chat"></div>
 
     <div class="input-row">
       <input id="userInput" type="text" placeholder="Type your message..." />
-      <button onclick="sendMessage()">Send</button>
+      <button id="sendBtn">Send</button>
     </div>
   </div>
 
   <script>
-    const apiKey = prompt("Enter your OpenAI API key");
+    let apiKey = '';
+
+    // Prompt user for API key when page loads
+    window.onload = () => {
+      apiKey = prompt("Enter your OpenAI API key:");
+      if (!apiKey) {
+        alert("API key is required to use this chatbot.");
+        document.getElementById('sendBtn').disabled = true;
+      }
+    };
 
     async function sendMessage() {
       const input = document.getElementById("userInput");
       const chat = document.getElementById("chat");
       const userText = input.value.trim();
+
       if (!userText) return;
 
-      // Display user message
+      // Show user message
       const userBubble = document.createElement("div");
       userBubble.className = "chat-bubble user";
       userBubble.innerText = `👤 You: ${userText}`;
       chat.appendChild(userBubble);
       chat.scrollTop = chat.scrollHeight;
-
       input.value = "";
 
       try {
+        // Call OpenAI Chat Completion API
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -151,23 +164,38 @@
           })
         });
 
-        const data = await response.json();
-        const reply = data.choices?.[0]?.message?.content || "⚠️ Sorry, I couldn't understand that.";
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-        // Display bot response
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || "⚠️ Sorry, no reply.";
+
+        // Show bot reply
         const botBubble = document.createElement("div");
         botBubble.className = "chat-bubble bot";
         botBubble.innerText = `🤖 Catbot: ${reply}`;
         chat.appendChild(botBubble);
         chat.scrollTop = chat.scrollHeight;
 
-      } catch (error) {
+      } catch (err) {
+        // Show error message in chat
         const errorBubble = document.createElement("div");
         errorBubble.className = "chat-bubble bot";
         errorBubble.innerText = "⚠️ Error contacting OpenAI API.";
         chat.appendChild(errorBubble);
+        chat.scrollTop = chat.scrollHeight;
+        console.error(err);
       }
     }
+
+    document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+    // Also allow pressing Enter key to send
+    document.getElementById('userInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
   </script>
+
 </body>
 </html>
