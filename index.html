@@ -1,63 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ophelia's Catbot</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #f9f7f3, #e4f1f8);
-      margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      height: 100vh;
+      padding: 40px 20px;
     }
 
-    .container {
-      background-color: white;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      padding: 24px;
-      width: 90%;
+    .chat-container {
+      background: white;
+      width: 100%;
       max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
     }
 
     h2 {
       text-align: center;
-      color: #333;
+      color: #444;
     }
 
     .intro {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
-      background-color: #f0f4f8;
+      margin-bottom: 16px;
+      background-color: #fef6e4;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 8px;
     }
 
     .intro img {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       margin-right: 10px;
     }
 
     #chat {
-      background-color: #fdfdfd;
-      border: 1px solid #ccc;
-      padding: 15px;
-      min-height: 200px;
-      max-height: 300px;
-      overflow-y: auto;
+      border: 1px solid #ddd;
       border-radius: 8px;
+      padding: 12px;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+      background: #fafafa;
       white-space: pre-line;
       margin-bottom: 16px;
     }
 
-    input {
-      width: 75%;
+    .chat-bubble {
+      margin: 8px 0;
+      padding: 10px 14px;
+      border-radius: 16px;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    .user {
+      background-color: #d0ebff;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    .bot {
+      background-color: #e0f7e9;
+      align-self: flex-start;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="text"] {
+      flex: 1;
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
@@ -67,33 +90,34 @@
     button {
       padding: 10px 16px;
       font-size: 16px;
-      border-radius: 8px;
-      background-color: #5f9ea0;
-      color: white;
       border: none;
+      background-color: #5e81ac;
+      color: white;
+      border-radius: 8px;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #468b8b;
+      background-color: #4c6e91;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h2>Talk with Ophelia's Catbot</h2>
+  <div class="chat-container">
+    <h2>Talk with Ophelia's Catbot 🐾</h2>
 
     <div class="intro">
-      <img src="https://raw.githubusercontent.com/Opheliasl/Chat_with_me/main/assets/Cat_ZaiZai.png" 
-           alt="Cat ZaiZai" />
+      <img src="https://raw.githubusercontent.com/Opheliasl/Chat_with_me/main/assets/Cat_ZaiZai.png" alt="Cat ZaiZai" />
       <span>Hello! I'm Ophelia's cats-sistant. Ask me anything about her interests, or just say hi!</span>
     </div>
 
     <div id="chat"></div>
 
-    <input id="userInput" type="text" placeholder="Type your message..." />
-    <button onclick="sendMessage()">Send</button>
+    <div class="input-row">
+      <input id="userInput" type="text" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
   </div>
 
   <script>
@@ -105,25 +129,44 @@
       const userText = input.value.trim();
       if (!userText) return;
 
-      chat.innerText += `\n👤 You: ${userText}`;
+      // Display user message
+      const userBubble = document.createElement("div");
+      userBubble.className = "chat-bubble user";
+      userBubble.innerText = `👤 You: ${userText}`;
+      chat.appendChild(userBubble);
+      chat.scrollTop = chat.scrollHeight;
+
       input.value = "";
 
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: userText }]
-        })
-      });
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: userText }]
+          })
+        });
 
-      const data = await response.json();
-      const reply = data.choices?.[0]?.message?.content || "⚠️ Error from OpenAI";
-      chat.innerText += `\n🤖 Catbot: ${reply}\n`;
-      chat.scrollTop = chat.scrollHeight; // Auto scroll
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || "⚠️ Sorry, I couldn't understand that.";
+
+        // Display bot response
+        const botBubble = document.createElement("div");
+        botBubble.className = "chat-bubble bot";
+        botBubble.innerText = `🤖 Catbot: ${reply}`;
+        chat.appendChild(botBubble);
+        chat.scrollTop = chat.scrollHeight;
+
+      } catch (error) {
+        const errorBubble = document.createElement("div");
+        errorBubble.className = "chat-bubble bot";
+        errorBubble.innerText = "⚠️ Error contacting OpenAI API.";
+        chat.appendChild(errorBubble);
+      }
     }
   </script>
 </body>
