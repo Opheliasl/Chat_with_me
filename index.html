@@ -4,26 +4,97 @@
   <meta charset="UTF-8" />
   <title>Ophelia's Catbot</title>
   <style>
-    body { font-family: Arial; max-width: 600px; margin: 40px auto; }
-    #chat { border: 1px solid #ccc; padding: 10px; min-height: 200px; white-space: pre-line; }
-    input, button { font-size: 16px; margin-top: 10px; }
-    input { width: 80%; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #f9f7f3, #e4f1f8);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .intro {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      background-color: #f0f4f8;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .intro img {
+      width: 36px;
+      height: 36px;
+      margin-right: 10px;
+    }
+
+    #chat {
+      background-color: #fdfdfd;
+      border: 1px solid #ccc;
+      padding: 15px;
+      min-height: 200px;
+      max-height: 300px;
+      overflow-y: auto;
+      border-radius: 8px;
+      white-space: pre-line;
+      margin-bottom: 16px;
+    }
+
+    input {
+      width: 75%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      background-color: #5f9ea0;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #468b8b;
+    }
   </style>
 </head>
 
 <body>
-  <h2>Talk with Ophelia's Catbot</h2>
+  <div class="container">
+    <h2>Talk with Ophelia's Catbot</h2>
 
-  <div style="display: flex; align-items: center; margin-bottom: 10px;">
-    <img src="https://raw.githubusercontent.com/Opheliasl/Chat_with_me/main/assets/Cat_ZaiZai.png" 
-         alt="Cat ZaiZai" 
-         style="width: 24px; height: 24px; margin-right: 8px;" />
-    <span>Hello! I'm Ophelia's cats-sistant. Ask me anything about her interests, or just say hi!</span>
+    <div class="intro">
+      <img src="https://raw.githubusercontent.com/Opheliasl/Chat_with_me/main/assets/Cat_ZaiZai.png" 
+           alt="Cat ZaiZai" />
+      <span>Hello! I'm Ophelia's cats-sistant. Ask me anything about her interests, or just say hi!</span>
+    </div>
+
+    <div id="chat"></div>
+
+    <input id="userInput" type="text" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
   </div>
-
-  <input id="userInput" type="text" placeholder="Type your message..." />
-  <button onclick="sendMessage()">Send</button>
-</body>
 
   <script>
     const apiKey = prompt("Enter your OpenAI API key");
@@ -31,7 +102,7 @@
     async function sendMessage() {
       const input = document.getElementById("userInput");
       const chat = document.getElementById("chat");
-      const userText = input.value;
+      const userText = input.value.trim();
       if (!userText) return;
 
       chat.innerText += `\n👤 You: ${userText}`;
@@ -51,7 +122,8 @@
 
       const data = await response.json();
       const reply = data.choices?.[0]?.message?.content || "⚠️ Error from OpenAI";
-      chat.innerText += `\n🤖 Bot: ${reply}\n`;
+      chat.innerText += `\n🤖 Catbot: ${reply}\n`;
+      chat.scrollTop = chat.scrollHeight; // Auto scroll
     }
   </script>
 </body>
