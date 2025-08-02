@@ -1,7 +1,7 @@
 # Chat_with_me
 Ophelia's Assistant (Chatbot) 
 
-# 👾 AI Chatbot (Experimental Project)
+## 👾 AI Chatbot (Experimental Project)
 
 Welcome! This is a simple web-based AI chatbot powered by OpenAI's GPT model. It's an experimental project I'm using to learn and share how modern language models can be integrated into web applications.
 
