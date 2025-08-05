@@ -6,7 +6,9 @@ Ophelia's Assistant (Chatbot)
 Welcome! This is a simple web-based AI chatbot powered by OpenAI's GPT model. It's an experimental project I'm using to learn and share how modern language models can be integrated into web applications.
 
 ## 🦊 Why I Built This
+In memory of my beloved cat ZaiZai, who passed away on July 6th,2025. Creating this space helps me hold on to his spirit and share a little joy with others.
 
+## 🐼 A Little about Me:  
 I'm curious about the intersection of AI, web technologies, and user experience. This chatbot is a small but fun project where I'm experimenting with:
 - Calling the OpenAI API from the browser
 - Building lightweight static sites
