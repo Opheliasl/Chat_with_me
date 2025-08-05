@@ -1,4 +1,4 @@
-# Chat_with_me
+# Chat_with_me (not finished yet)
 Ophelia's Assistant (Chatbot) 
 
 ## 👾 AI Chatbot (Experimental Project)
@@ -13,3 +13,5 @@ I'm curious about the intersection of AI, web technologies, and user experience.
 - Sharing tools that spark conversation
 
 If you're visiting this page from my GitHub — thanks for checking it out! 💗
+
+https://opheliasl.github.io/Chat_with_me/
